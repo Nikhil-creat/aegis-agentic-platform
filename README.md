@@ -2,8 +2,13 @@
 
 **Enterprise-grade Autonomous Agentic AI Platform** — Multi-agent orchestration, Agentic RAG with reranking, CNN-based visual understanding, secure polyglot code execution, and full observability.
 
-> **Designed and Developed by NIKHIL CHARY SRIRAMOJU**
-> BTech CSE | [GitHub](https://github.com/Nikhil-creat) · [LinkedIn](https://in.linkedin.com/in/nikhil-chary-sriramoju-95041b38a)
+> **Designed and Developed by**
+> # **NIKHIL CHARY SRIRAMOJU**
+> BTech CSE | [GitHub](https://github.com/Nikhil-creat) 
+> [LinkedIn](https://in.linkedin.com/in/nikhil-chary-sriramoju-95041b38a)
+> Email: sriramojunikhil66@gmail.com
+> Instagram: [@nikhil__sriramoju](https://www.instagram.com/nikhil__sriramoju)
+> Facebook: [Profile](https://www.facebook.com/profile.php?id=100079201124141)
 
 ---
 
