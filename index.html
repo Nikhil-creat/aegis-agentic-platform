@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Aegis — Autonomous Agentic Platform</title>
+<meta name="description" content="Enterprise-grade autonomous agentic AI platform: LangGraph orchestration, agentic RAG, CNN vision, secure code execution. Designed and developed by Nikhil Chary Sriramoju." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>">
+<style>
+  :root{
+    --bg: #0a0e14;
+    --bg-raised: #101722;
+    --bg-card: #131b28;
+    --line: #223047;
+    --ink: #dce6f2;
+    --ink-dim: #8ea3bd;
+    --ink-faint: #5a6c85;
+    --signal: #35e0c0;
+    --signal-dim: #1c8f7c;
+    --amber: #f0a860;
+    --danger: #ef6a6a;
+    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: light){
+    :root:not([data-theme="dark"]){
+      --bg:#f4f6f9; --bg-raised:#eaeef3; --bg-card:#fff; --line:#d7dee6;
+      --ink:#152232; --ink-dim:#4d5c70; --ink-faint:#8a97a8;
+    }
+  }
+  *{box-sizing:border-box;}
+  html{scroll-padding-top: env(safe-area-inset-top, 0px);}
+  body{
+    margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans);
+    line-height:1.55; -webkit-font-smoothing:antialiased;
+  }
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
+  .wrap{max-width:1040px; margin:0 auto; padding:0 24px;}
+  a{color:var(--signal);}
+
+  /* ---- nav ---- */
+  header.nav{
+    position:sticky; top:0; z-index:20; backdrop-filter:blur(10px);
+    background:color-mix(in srgb, var(--bg) 82%, transparent);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{display:flex; align-items:center; justify-content:space-between; padding:14px 24px; max-width:1040px; margin:0 auto;}
+  .brand{display:flex; align-items:center; gap:10px; font-family:var(--mono); font-weight:600; letter-spacing:.02em; color:var(--ink);}
+  .brand .dot{width:8px; height:8px; border-radius:50%; background:var(--signal); box-shadow:0 0 8px var(--signal);}
+  .nav-links{display:flex; gap:22px; font-size:.88rem;}
+  .nav-links a{color:var(--ink-dim); text-decoration:none;}
+  .nav-links a:hover{color:var(--signal);}
+  @media (max-width:640px){ .nav-links{display:none;} }
+
+  /* ---- hero ---- */
+  .hero{padding:64px 0 40px; border-bottom:1px solid var(--line);}
+  .hero-grid{display:grid; grid-template-columns:1.3fr .9fr; gap:40px; align-items:center;}
+  @media (max-width:820px){ .hero-grid{grid-template-columns:1fr;} }
+  .kicker{font-family:var(--mono); font-size:.8rem; color:var(--signal); margin:0 0 14px;}
+  h1{font-size:clamp(2rem,5vw,2.9rem); line-height:1.08; margin:0 0 18px; font-weight:700; letter-spacing:-.01em;}
+  .lede{color:var(--ink-dim); font-size:1.05rem; max-width:52ch; margin:0 0 26px;}
+  .cta-row{display:flex; gap:12px; flex-wrap:wrap;}
+  .btn{
+    display:inline-flex; align-items:center; gap:8px; padding:11px 18px; border-radius:6px;
+    font-family:var(--mono); font-size:.86rem; text-decoration:none; border:1px solid transparent;
+    transition:transform .15s ease;
+  }
+  .btn:hover{transform:translateY(-1px);}
+  .btn-solid{background:var(--signal); color:#052421; font-weight:600;}
+  .btn-ghost{border-color:var(--line); color:var(--ink);}
+
+  .hero-panel{
+    background:var(--bg-card); border:1px solid var(--line); border-radius:10px; padding:18px;
+    font-family:var(--mono); font-size:.82rem; color:var(--ink-dim); overflow-x:auto;
+  }
+  .hero-panel .line{white-space:pre; margin:2px 0;}
+  .hero-panel .ok{color:var(--signal);}
+  .hero-panel .k{color:var(--amber);}
+
+  /* ---- author strip ---- */
+  .author{
+    display:flex; align-items:center; gap:14px; padding:18px 0; border-bottom:1px solid var(--line);
+    color:var(--ink-dim); font-size:.92rem; flex-wrap:wrap;
+  }
+  .author strong{color:var(--ink); font-family:var(--mono);}
+  .author .sep{color:var(--ink-faint);}
+
+  section{padding:56px 0; border-bottom:1px solid var(--line);}
+  section:last-of-type{border-bottom:none;}
+  h2{font-size:1.5rem; margin:0 0 8px; letter-spacing:-.01em;}
+  .section-sub{color:var(--ink-dim); margin:0 0 32px; max-width:64ch;}
+
+  /* ---- architecture diagram ---- */
+  pre.diagram{
+    background:var(--bg-card); border:1px solid var(--line); border-radius:10px;
+    padding:20px; overflow-x:auto; font-family:var(--mono); font-size:.72rem; color:var(--ink-dim);
+    line-height:1.5;
+  }
+
+  /* ---- microservice table ---- */
+  table{width:100%; border-collapse:collapse; font-size:.9rem;}
+  th{text-align:left; font-family:var(--mono); font-size:.75rem; color:var(--ink-faint); font-weight:500; padding:10px 12px; border-bottom:1px solid var(--line);}
+  td{padding:12px; border-bottom:1px solid var(--line); vertical-align:top;}
+  td.svc{font-family:var(--mono); color:var(--signal); white-space:nowrap;}
+  td.port{font-family:var(--mono); color:var(--ink-faint);}
+
+  /* ---- stack badges ---- */
+  .badges{display:flex; flex-wrap:wrap; gap:8px;}
+  .badge{
+    font-family:var(--mono); font-size:.78rem; padding:6px 12px; border-radius:20px;
+    border:1px solid var(--line); color:var(--ink-dim); background:var(--bg-card);
+  }
+
+  /* ---- feature grid ---- */
+  .grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+  @media (max-width:760px){ .grid3{grid-template-columns:1fr;} }
+  .feature{background:var(--bg-card); border:1px solid var(--line); border-radius:10px; padding:20px;}
+  .feature h3{margin:0 0 8px; font-size:1rem;}
+  .feature p{margin:0; color:var(--ink-dim); font-size:.88rem;}
+  .feature .tag{font-family:var(--mono); font-size:.7rem; color:var(--signal); display:block; margin-bottom:10px;}
+
+  /* ---- interview prep / deep dive ---- */
+  .filter-row{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:24px;}
+  .filter-btn{
+    font-family:var(--mono); font-size:.76rem; padding:6px 12px; border-radius:6px;
+    border:1px solid var(--line); background:transparent; color:var(--ink-dim); cursor:pointer;
+  }
+  .filter-btn.active{background:var(--signal); color:#052421; border-color:var(--signal); font-weight:600;}
+
+  details.qa{
+    background:var(--bg-card); border:1px solid var(--line); border-radius:10px;
+    margin-bottom:10px; overflow:hidden;
+  }
+  details.qa[open]{border-color:var(--signal-dim);}
+  details.qa summary{
+    list-style:none; cursor:pointer; padding:16px 18px; display:flex; align-items:center;
+    justify-content:space-between; gap:12px; font-weight:500;
+  }
+  details.qa summary::-webkit-details-marker{display:none;}
+  details.qa summary .qtext{flex:1;}
+  details.qa summary .chev{color:var(--ink-faint); transition:transform .2s ease; font-family:var(--mono);}
+  details.qa[open] summary .chev{transform:rotate(90deg); color:var(--signal);}
+  .qa-body{padding:0 18px 18px; color:var(--ink-dim); font-size:.92rem;}
+  .qa-body p{margin:0 0 10px;}
+  .qa-body code{background:var(--bg-raised); padding:1px 6px; border-radius:4px; font-family:var(--mono); font-size:.85em; color:var(--signal);}
+  .tag-row{display:flex; gap:6px; margin-bottom:14px;}
+  .tag{font-family:var(--mono); font-size:.66rem; padding:2px 8px; border-radius:12px; text-transform:uppercase; letter-spacing:.04em;}
+  .tag.easy{background:#123a2e; color:var(--signal);}
+  .tag.medium{background:#3a2f10; color:var(--amber);}
+  .tag.hard{background:#3a1414; color:var(--danger);}
+  .tag.cat{background:var(--bg-raised); color:var(--ink-faint);}
+
+  /* ---- roadmap ---- */
+  .roadmap{border-left:2px solid var(--line); padding-left:20px; margin-left:6px;}
+  .road-item{position:relative; padding-bottom:24px;}
+  .road-item::before{content:''; position:absolute; left:-26px; top:4px; width:10px; height:10px; border-radius:50%; background:var(--bg); border:2px solid var(--signal-dim);}
+  .road-item h4{margin:0 0 4px; font-size:.95rem;}
+  .road-item p{margin:0; color:var(--ink-dim); font-size:.86rem;}
+  .road-item .status{font-family:var(--mono); font-size:.7rem; color:var(--amber);}
+
+  footer{padding:40px 0 60px; text-align:center; color:var(--ink-faint); font-size:.85rem;}
+  footer strong{color:var(--ink-dim); font-family:var(--mono);}
+
+  ::selection{background:var(--signal-dim); color:#fff;}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <div class="brand"><span class="dot"></span> AEGIS</div>
+    <nav class="nav-links">
+      <a href="#architecture">Architecture</a>
+      <a href="#stack">Stack</a>
+      <a href="#features">Features</a>
+      <a href="#deep-dive">Deep Dive</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="https://github.com/Nikhil-creat/aegis-agentic-platform">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section class="hero" style="border-bottom:none; padding-bottom:0;">
+    <div class="hero-grid">
+      <div>
+        <p class="kicker">// enterprise autonomous agentic ai platform</p>
+        <h1>Agents that plan, retrieve, execute, and correct themselves.</h1>
+        <p class="lede">A production-grade reference architecture combining LangGraph multi-agent orchestration, agentic RAG with reranking, CNN-based visual understanding, and a hardened polyglot code sandbox — fully containerized and observable.</p>
+        <div class="cta-row">
+          <a class="btn btn-solid" href="https://github.com/Nikhil-creat/aegis-agentic-platform">View source →</a>
+          <a class="btn btn-ghost" href="#deep-dive">Technical deep dive</a>
+        </div>
+      </div>
+      <div class="hero-panel">
+        <div class="line"><span class="k">$</span> docker compose up -d</div>
+        <div class="line"><span class="ok">✓</span> gateway        :8000</div>
+        <div class="line"><span class="ok">✓</span> agent-service  ReAct loop ready</div>
+        <div class="line"><span class="ok">✓</span> rag-service    reranker loaded</div>
+        <div class="line"><span class="ok">✓</span> exec-service   sandbox: net=none</div>
+        <div class="line"><span class="ok">✓</span> vision-service resnet18 warm</div>
+        <div class="line" style="color:var(--ink-faint)">watching for tasks...</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="author">
+    <span>Designed and developed by</span> <strong>NIKHIL CHARY SRIRAMOJU</strong>
+    <span class="sep">·</span> BTech CSE
+    <span class="sep">·</span> <a href="https://github.com/Nikhil-creat">GitHub</a>
+    <span class="sep">·</span> <a href="https://in.linkedin.com/in/nikhil-chary-sriramoju-95041b38a">LinkedIn</a>
+  </div>
+
+  <section id="architecture">
+    <h2>Architecture</h2>
+    <p class="section-sub">Every request flows through a gateway into independently scalable services, coordinated by a Redis/RabbitMQ broker and audited into PostgreSQL.</p>
+    <pre class="diagram">
+                       ┌────────────────────────────┐
+                       │  Next.js Frontend (SSE/WS)  │
+                       └──────────────┬─────────────┘
+                                      │ HTTPS / WSS
+                       ┌──────────────▼─────────────┐
+                       │  FastAPI Gateway (JWT/CORS) │
+                       └───┬──────────┬──────────┬───┘
+              ┌────────────┘          │          └────────────┐
+      ┌───────▼──────┐        ┌───────▼───────┐        ┌───────▼────────┐
+      │ Agent Service │        │  RAG Service  │        │ Code-Exec Svc  │
+      │ LangGraph     │        │ Qdrant + BGE  │        │ Docker sandbox │
+      │ ReAct loops   │        │ reranker      │        │ ephemeral      │
+      │ Guardrails    │        │ Redis cache   │        │ workers        │
+      └───────┬───────┘        └───────┬───────┘        └───────┬────────┘
+              │                        │                        │
+      ┌───────▼────────────────────────▼────────────────────────▼───────┐
+      │   Celery Workers  ⇄  Redis/RabbitMQ Broker  ⇄  PostgreSQL        │
+      └───────┬────────────────────────────────────────────────┬───────┘
+              │                                                │
+      ┌───────▼───────┐                              ┌─────────▼────────┐
+      │ CNN Vision Svc │                              │   Observability   │
+      │ (PyTorch)      │                              │ OTel / Prometheus │
+      └────────────────┘                              │ Grafana / Phoenix │
+                                                        └───────────────────┘
+    </pre>
+  </section>
+
+  <section>
+    <h2>Microservices</h2>
+    <p class="section-sub">Nine independently deployable services, each with its own resource envelope.</p>
+    <table>
+      <tr><th>Service</th><th>Responsibility</th><th>Port</th></tr>
+      <tr><td class="svc">gateway</td><td>FastAPI main router, JWT auth, SSE/WS streaming</td><td class="port">8000</td></tr>
+      <tr><td class="svc">agent-service</td><td>LangGraph ReAct orchestration, self-correction, guardrails</td><td class="port">internal</td></tr>
+      <tr><td class="svc">rag-service</td><td>Multi-hop retrieval, query expansion, reranking, semantic cache</td><td class="port">internal</td></tr>
+      <tr><td class="svc">vision-service</td><td>CNN-based diagram/UI feature extraction</td><td class="port">8100</td></tr>
+      <tr><td class="svc">exec-service</td><td>Sandboxed polyglot code execution</td><td class="port">internal</td></tr>
+      <tr><td class="svc">worker</td><td>Celery async task processing</td><td class="port">internal</td></tr>
+      <tr><td class="svc">postgres</td><td>Users, audit logs, session state</td><td class="port">5432</td></tr>
+      <tr><td class="svc">qdrant</td><td>Vector database</td><td class="port">6333</td></tr>
+      <tr><td class="svc">redis</td><td>Cache + message broker</td><td class="port">6379</td></tr>
+      <tr><td class="svc">prometheus / grafana</td><td>Metrics + dashboards</td><td class="port">9090 / 3001</td></tr>
+    </table>
+  </section>
+
+  <section id="stack">
+    <h2>Stack</h2>
+    <p class="section-sub">Chosen for production defensibility, not novelty.</p>
+    <div class="badges">
+      <span class="badge">FastAPI</span><span class="badge">Pydantic v2</span><span class="badge">LangGraph</span>
+      <span class="badge">LangChain</span><span class="badge">PyTorch</span><span class="badge">Qdrant</span>
+      <span class="badge">Redis</span><span class="badge">Celery</span><span class="badge">PostgreSQL</span>
+      <span class="badge">Next.js 14</span><span class="badge">Tailwind CSS</span><span class="badge">Docker</span>
+      <span class="badge">OpenTelemetry</span><span class="badge">Prometheus</span><span class="badge">Grafana</span>
+      <span class="badge">JWT</span><span class="badge">BGE Reranker</span>
+    </div>
+  </section>
+
+  <section id="features">
+    <h2>Advanced &amp; Futuristic Additions</h2>
+    <p class="section-sub">Beyond the core spec — capabilities that push this toward a genuinely autonomous, self-improving system.</p>
+    <div class="grid3">
+      <div class="feature"><span class="tag">agents</span><h3>Reflexion memory</h3><p>Failed self-correction attempts are logged with their root cause and retrieved on future runs, so the agent avoids repeating known-bad plans.</p></div>
+      <div class="feature"><span class="tag">rag</span><h3>Adaptive retrieval depth</h3><p>Query complexity (estimated via token entropy + sub-question count) dynamically scales top-k and hop count instead of using a fixed budget.</p></div>
+      <div class="feature"><span class="tag">vision</span><h3>Diagram-to-graph parsing</h3><p>CNN classification output feeds a downstream layout parser that reconstructs architecture diagrams into an editable node-edge graph.</p></div>
+      <div class="feature"><span class="tag">execution</span><h3>Speculative pre-warming</h3><p>Common language images (Python, Node) are kept as warm, paused containers to cut cold-start latency below 300ms.</p></div>
+      <div class="feature"><span class="tag">security</span><h3>Per-tenant rate limiting</h3><p>Token-bucket limits scoped to JWT subject, enforced at the gateway before requests reach agent or sandbox services.</p></div>
+      <div class="feature"><span class="tag">observability</span><h3>Cost-per-task tracing</h3><p>Every LangGraph node span carries token usage as an OTel attribute, rolled up into a per-session dollar cost in Grafana.</p></div>
+    </div>
+  </section>
+
+  <section id="deep-dive">
+    <h2>Technical Deep Dive</h2>
+    <p class="section-sub">Mock-interview-style questions on this architecture, ordered by difficulty. Built for portfolio walkthroughs and interview prep.</p>
+
+    <div class="filter-row">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="easy">Easy</button>
+      <button class="filter-btn" data-filter="medium">Medium</button>
+      <button class="filter-btn" data-filter="hard">Hard</button>
+    </div>
+
+    <div id="qa-list">
+
+      <details class="qa" data-level="easy">
+        <summary><span class="qtext">Why use LangGraph instead of a single long prompt with tool-calling?</span><span class="chev">›</span></summary>
+        <div class="qa-body">
+          <div class="tag-row"><span class="tag easy">easy</span><span class="tag cat">agents</span></div>
+          <p>A single-prompt loop re-sends the entire conversation history on every tool call, which is expensive and loses explicit control over state. LangGraph models the workflow as an explicit state machine (<code>AgentState</code>), so each node — planner, tool_router, executor, reflector — only touches the state it needs, transitions are inspectable, and retries or branches (like the self-correction loop) can be encoded as graph edges instead of prompt hacks.</p>
+        </div>
+      </details>
+
+      <details class="qa" data-level="easy">
+        <summary><span class="qtext">What happens if a code execution container tries to access the network?</span><span class="chev">›</span></summary>
+        <div class="qa-body">
+          <div class="tag-row"><span class="tag easy">easy</span><span class="tag cat">security</span></div>
+          <p>It fails immediately. Every sandbox container is created with <code>network_disabled=True</code>, so it has no network namespace attached at all — there's no egress to block because there's no interface to use. This is enforced at container-creation time in <code>sandbox_manager.py</code>, not by a firewall rule that could be misconfigured.</p>
+        </div>
+      </details>
+
+      <details class="qa" data-level="medium">
+        <summary><span class="qtext">How does the self-correction loop avoid infinite retries?</span><span class="chev">›</span></summary>
+        <div class="qa-body">
+          <div class="tag-row"><span class="tag medium">medium</span><span class="tag cat">agents</span></div>
+          <p>The <code>reflector_node</code> checks <code>state["error_count"]</code> against <code>MAX_SELF_CORRECTION_ATTEMPTS</code> (3). Each failed tool execution increments the counter in <code>executor_node</code>. Once the ceiling is hit, the reflector short-circuits by setting <code>final_answer</code> directly, which every downstream node checks first and passes through unchanged — guaranteeing termination regardless of how many corrected steps get inserted into the plan.</p>
+        </div>
+      </details>
+
+      <details class="qa" data-level="medium">
+        <summary><span class="qtext">Why cache in Redis by embedding similarity instead of exact query string?</span><span class="chev">›</span></summary>
+        <div class="qa-body">
+          <div class="tag-row"><span class="tag medium">medium</span><span class="tag cat">rag</span></div>
+          <p>Users rarely phrase the same question identically. "How do I reset my password?" and "steps to change my password" are semantically identical but would miss an exact-match cache entirely. The semantic cache embeds the incoming query, scans cached query embeddings, and serves a hit above a cosine-similarity threshold (0.92 by default) — trading a bit of scan cost for a much higher effective hit rate, which is what actually reduces LLM spend.</p>
+        </div>
+      </details>
+
+      <details class="qa" data-level="medium">
+        <summary><span class="qtext">Why does the vision CNN freeze the ResNet18 backbone?</span><span class="chev">›</span></summary>
+        <div class="qa-body">
+          <div class="tag-row"><span class="tag medium">medium</span><span class="tag cat">vision</span></div>
+          <p>The backbone is pretrained on ImageNet and already encodes strong general-purpose visual features (edges, shapes, textures). Freezing it means only the small <code>embed</code> and <code>classifier</code> heads (512→128→5 params) need training on a much smaller labeled dataset of UI/diagram screenshots, which avoids overfitting and keeps training cheap enough to iterate on a laptop GPU.</p>
+        </div>
+      </details>
+
+      <details class="qa" data-level="hard">
+        <summary><span class="qtext">The reranker adds latency. How would you keep p99 response time acceptable under load?</span><span class="chev">›</span></summary>
+        <div class="qa-body">
+          <div class="tag-row"><span class="tag hard">hard</span><span class="tag cat">rag</span></div>
+          <p>Three levers, in order of impact: (1) shrink the candidate pool before reranking — dedupe across expanded queries first (already done via <code>candidate_pool.setdefault</code>) so the cross-encoder never scores redundant documents; (2) batch the reranker's <code>predict()</code> calls and run it on GPU rather than CPU inference, which is the current default; (3) treat semantic-cache misses as the expensive path only — since cache hits already skip reranking entirely, raising the cache hit rate (via a lower similarity threshold, tuned against a false-positive budget) reduces how often the expensive path runs at all.</p>
+        </div>
+      </details>
+
+      <details class="qa" data-level="hard">
+        <summary><span class="qtext">A container escape vulnerability is disclosed in the Docker runtime tomorrow. What's your blast radius, and how do you reduce it architecturally?</span><span class="chev">›</span></summary>
+        <div class="qa-body">
+          <div class="tag-row"><span class="tag hard">hard</span><span class="tag cat">security</span></div>
+          <p>Blast radius today: the worker container has <code>/var/run/docker.sock</code> mounted to spawn sandbox containers, so a compromised sandbox that escapes could potentially reach the host's Docker daemon and, from there, every other container on the host. Architectural mitigation: replace Docker-in-Docker sandbox spawning with a dedicated, network-isolated "runner" VM or a gVisor/Kata Containers runtime (stronger kernel isolation than default runc), and stop mounting the host socket directly — instead have the worker call a narrow, purpose-built sandbox API service that itself holds the only Docker socket access, so a sandbox escape can't reach the orchestration layer at all.</p>
+        </div>
+      </details>
+
+      <details class="qa" data-level="hard">
+        <summary><span class="qtext">How would you extend the agent graph to support human-in-the-loop approval before executing code?</span><span class="chev">›</span></summary>
+        <div class="qa-body">
+          <div class="tag-row"><span class="tag hard">hard</span><span class="tag cat">agents</span></div>
+          <p>Insert an <code>approval_gate</code> node between <code>tool_router</code> and <code>executor</code> that, when the routed tool is <code>execute_code</code>, sets <code>final_answer</code> to a pending-approval marker and persists the full <code>AgentState</code> (LangGraph state is serializable) to Postgres keyed by session ID instead of continuing the graph. The gateway exposes an <code>/approve/{session_id}</code> endpoint that rehydrates that exact state and resumes <code>agent_graph.ainvoke</code> from the same node — this works because the graph is a pure function of state, so pausing and resuming mid-graph requires no special-casing beyond persisting and reloading the <code>AgentState</code> dict.</p>
+        </div>
+      </details>
+
+    </div>
+  </section>
+
+  <section id="roadmap">
+    <h2>Roadmap</h2>
+    <p class="section-sub">What's designed but not yet in this build — the honest gap list.</p>
+    <div class="roadmap">
+      <div class="road-item"><span class="status">planned</span><h4>Real user store</h4><p>Replace the in-memory auth dict in <code>routes_auth.py</code> with the PostgreSQL <code>User</code> model already defined in <code>db_models.py</code>.</p></div>
+      <div class="road-item"><span class="status">planned</span><h4>GPU-backed reranker &amp; embeddings</h4><p>Move <code>CrossEncoderReranker</code> and embedding calls off CPU inference for production-scale throughput.</p></div>
+      <div class="road-item"><span class="status">planned</span><h4>Human-in-the-loop approval gate</h4><p>Pause/resume graph execution before high-risk tool calls (see deep-dive above).</p></div>
+      <div class="road-item"><span class="status">exploring</span><h4>Multi-tenant isolation</h4><p>Namespace Qdrant collections and Redis keys per organization, not just per user.</p></div>
+      <div class="road-item"><span class="status">exploring</span><h4>Kata Containers / gVisor sandbox runtime</h4><p>Stronger isolation boundary than default runc for the code-execution engine.</p></div>
+    </div>
+  </section>
+
+  <footer>
+    <p><strong>Aegis Autonomous Agentic Platform</strong></p>
+    <p>Designed and developed by <strong>Nikhil Chary Sriramoju</strong> — BTech CSE</p>
+    <p><a href="https://github.com/Nikhil-creat/aegis-agentic-platform">Source on GitHub</a></p>
+  </footer>
+
+</div>
+
+<script>
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      document.querySelectorAll('.qa').forEach(qa => {
+        qa.style.display = (filter === 'all' || qa.dataset.level === filter) ? '' : 'none';
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
