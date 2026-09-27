@@ -1,0 +1,20 @@
+# CNN Vision microservice — isolated so heavy torch layer doesn't bloat gateway image
+FROM python:3.11-slim AS builder
+WORKDIR /build
+RUN apt-get update && apt-get install -y --no-install-recommends gcc g++ && rm -rf /var/lib/apt/lists/*
+COPY requirements.txt .
+RUN pip install --no-cache-dir --user torch==2.4.1 torchvision==0.19.1 pillow==10.4.0 numpy==1.26.4 fastapi==0.115.0 uvicorn==0.30.6
+
+FROM python:3.11-slim AS runtime
+LABEL maintainer="Nikhil Chary Sriramoju"
+RUN addgroup --system aegis && adduser --system --ingroup aegis aegis
+WORKDIR /app
+COPY --from=builder /root/.local /home/aegis/.local
+COPY app/agents /app/agents
+COPY app/core /app/core
+COPY app/models /app/models
+COPY vision_service.py ./vision_service.py 2>/dev/null || true
+ENV PATH=/home/aegis/.local/bin:$PATH PYTHONUNBUFFERED=1
+USER aegis
+EXPOSE 8100
+CMD ["uvicorn", "app.agents.vision_cnn:app", "--host", "0.0.0.0", "--port", "8100"]
